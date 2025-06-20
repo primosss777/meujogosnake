@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Snake 2.0 - Jogo da Cobrinha Moderno</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One:wght@400&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Splash Screen -->
+    <div id="splash-screen" class="splash-screen">
+        <div class="splash-content">
+            <img src="assets/images/logo_jogo_cobrinha.png" alt="Snake 2.0 Logo" class="splash-logo">
+            <div class="loading-bar">
+                <div class="loading-progress"></div>
+            </div>
+            <p class="loading-text">Carregando...</p>
+        </div>
+    </div>
+
+    <!-- Menu Principal -->
+    <div id="main-menu" class="screen hidden">
+        <div class="menu-container">
+            <img src="assets/images/logo_jogo_cobrinha.png" alt="Snake 2.0" class="menu-logo">
+            <h1 class="game-title">Snake 2.0</h1>
+            <p class="game-subtitle">A Aventura de Ziggy</p>
+            
+            <div class="menu-buttons">
+                <button class="menu-btn play-btn" onclick="showModeSelection()">
+                    <img src="assets/images/icon_play.png" alt="Play">
+                    Jogar
+                </button>
+                <button class="menu-btn shop-btn" onclick="showShop()">
+                    <img src="assets/images/icon_shop.png" alt="Loja">
+                    Loja
+                </button>
+                <button class="menu-btn settings-btn" onclick="showSettings()">
+                    <img src="assets/images/icon_settings.png" alt="Configurações">
+                    Configurações
+                </button>
+            </div>
+            
+            <div class="coins-display">
+                <span class="coin-icon">🪙</span>
+                <span id="coin-count">0</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Seleção de Modo -->
+    <div id="mode-selection" class="screen hidden">
+        <div class="mode-container">
+            <h2>Escolha o Modo de Jogo</h2>
+            <div class="mode-grid">
+                <div class="mode-card" onclick="startGame('classic')">
+                    <h3>Clássico</h3>
+                    <p>O jogo tradicional da cobrinha</p>
+                </div>
+                <div class="mode-card" onclick="startGame('adventure')">
+                    <h3>Aventura</h3>
+                    <p>Explore diferentes cenários</p>
+                </div>
+                <div class="mode-card" onclick="startGame('training')">
+                    <h3>Treinamento</h3>
+                    <p>Pratique sem colisões</p>
+                </div>
+                <div class="mode-card" onclick="startGame('night')">
+                    <h3>Noturno</h3>
+                    <p>Modo escuro e misterioso</p>
+                </div>
+                <div class="mode-card" onclick="startGame('selfie')">
+                    <h3>Selfie</h3>
+                    <p>Use sua câmera na cobra</p>
+                </div>
+            </div>
+            <button class="back-btn" onclick="showMainMenu()">Voltar</button>
+        </div>
+    </div>
+
+    <!-- Tela do Jogo -->
+    <div id="game-screen" class="screen hidden">
+        <div class="game-header">
+            <div class="score-display">
+                <span>Pontuação: </span>
+                <span id="score">0</span>
+            </div>
+            <div class="level-display">
+                <span>Nível: </span>
+                <span id="level">1</span>
+            </div>
+            <button class="pause-btn" onclick="pauseGame()">
+                <img src="assets/images/icon_pause.png" alt="Pausar">
+            </button>
+        </div>
+        
+        <canvas id="game-canvas" width="800" height="600"></canvas>
+        
+        <div class="game-controls">
+            <div class="control-row">
+                <button class="control-btn" id="up-btn">
+                    <img src="assets/images/icon_arrow_up.png" alt="Cima">
+                </button>
+            </div>
+            <div class="control-row">
+                <button class="control-btn" id="left-btn">
+                    <img src="assets/images/icon_arrow_left.png" alt="Esquerda">
+                </button>
+                <button class="control-btn" id="down-btn">
+                    <img src="assets/images/icon_arrow_down.png" alt="Baixo">
+                </button>
+                <button class="control-btn" id="right-btn">
+                    <img src="assets/images/icon_arrow_right.png" alt="Direita">
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tela de Pausa -->
+    <div id="pause-screen" class="screen hidden overlay">
+        <div class="pause-container">
+            <h2>Jogo Pausado</h2>
+            <div class="pause-buttons">
+                <button class="menu-btn" onclick="resumeGame()">
+                    <img src="assets/images/icon_play.png" alt="Continuar">
+                    Continuar
+                </button>
+                <button class="menu-btn" onclick="showSettings()">
+                    <img src="assets/images/icon_settings.png" alt="Configurações">
+                    Configurações
+                </button>
+                <button class="menu-btn" onclick="endGame()">
+                    Sair do Jogo
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tela de Game Over -->
+    <div id="game-over-screen" class="screen hidden overlay">
+        <div class="game-over-container">
+            <h2>Game Over!</h2>
+            <div class="final-score">
+                <p>Pontuação Final: <span id="final-score">0</span></p>
+                <p>Nível Alcançado: <span id="final-level">1</span></p>
+            </div>
+            <div class="game-over-buttons">
+                <button class="menu-btn" onclick="restartGame()">
+                    <img src="assets/images/icon_play.png" alt="Jogar Novamente">
+                    Jogar Novamente
+                </button>
+                <button class="menu-btn" onclick="showMainMenu()">
+                    Menu Principal
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loja -->
+    <div id="shop-screen" class="screen hidden">
+        <div class="shop-container">
+            <h2>Loja de Skins</h2>
+            <div class="shop-grid">
+                <div class="shop-item">
+                    <img src="assets/images/snake_skin_green.png" alt="Cobra Verde">
+                    <h3>Cobra Verde</h3>
+                    <p class="price">Grátis</p>
+                    <button class="buy-btn selected">Selecionada</button>
+                </div>
+                <div class="shop-item">
+                    <img src="assets/images/snake_skin_blue.png" alt="Cobra Azul">
+                    <h3>Cobra Azul</h3>
+                    <p class="price">50 🪙</p>
+                    <button class="buy-btn">Comprar</button>
+                </div>
+                <div class="shop-item">
+                    <img src="assets/images/snake_skin_red.png" alt="Cobra Vermelha">
+                    <h3>Cobra Vermelha</h3>
+                    <p class="price">100 🪙</p>
+                    <button class="buy-btn">Comprar</button>
+                </div>
+            </div>
+            <button class="back-btn" onclick="showMainMenu()">Voltar</button>
+        </div>
+    </div>
+
+    <!-- Configurações -->
+    <div id="settings-screen" class="screen hidden">
+        <div class="settings-container">
+            <h2>Configurações</h2>
+            <div class="settings-options">
+                <div class="setting-item">
+                    <label>Som</label>
+                    <input type="checkbox" id="sound-toggle" checked>
+                </div>
+                <div class="setting-item">
+                    <label>Música</label>
+                    <input type="checkbox" id="music-toggle" checked>
+                </div>
+                <div class="setting-item">
+                    <label>Modo Noturno</label>
+                    <input type="checkbox" id="night-mode-toggle">
+                </div>
+                <div class="setting-item">
+                    <label>Vibração</label>
+                    <input type="checkbox" id="vibration-toggle" checked>
+                </div>
+            </div>
+            <button class="back-btn" onclick="showMainMenu()">Voltar</button>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/game.js"></script>
+    <script src="js/game-modes.js"></script>
+    <script src="js/shop.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/audio.js"></script>
+    <script src="js/storage.js"></script>
+</body>
+</html>
+
